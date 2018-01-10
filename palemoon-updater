@@ -1,0 +1,37 @@
+#!/bin/bash
+# AUTHOR: TinyTimmyTokyo (irc/Snoonet/TinyTimmyTokyo)
+# Name: palemoon-updater
+# Purpose: Download latest unstable Pale Moon build and install it
+# Description: Downloads latest unstable tarball from official site,
+# and installs it to common location under /opt/palemoon .
+# Contains multiple sanity checks to ensure no unnecessary operations are
+# carried out.
+#
+# Changelog:
+# 2018/07/01: First release
+#
+# Version history:
+# v1 (20180107):
+# First release, can download tarball and install it under /opt/palemoon .
+#
+# Possible planned enhancements:
+# Remove potentially unnecessary sudo prefixes by requiring command to be
+# be run with superuser privlieges.
+# Add download-only functionality, so user can store tarballs in arbitrary location.
+
+# only create the directory if it doesn't already exist
+if [ ! -d $HOME/palemoon-unstable ]; then
+	mkdir -p $HOME/palemoon-unstable
+fi
+# only steamroller old tarball if it exists
+if [ -f $HOME/palemoon-unstable/palemoon-unstable-latest.linux-x86_64.tar.bz2 ]; then
+	rm $HOME/Downloads/palemoon-unstable/palemoon-unstable-latest.linux-x86_64.tar.bz2
+fi
+# OK, let's get the tarball
+wget https://linux.palemoon.org/datastore/release/palemoon-unstable-latest.linux-x86_64.tar.bz2 -P $HOME/palemoon-unstable/
+# only remove the old installation if we can confirm it might exist
+if [ -d /opt/palemoon ]; then
+	sudo rm -rf /opt/palemoon/
+fi
+# create the palemoon folder under /opt
+sudo tar -xvjpf $HOME/palemoon-unstable/palemoon-unstable-latest.linux-x86_64.tar.bz2 -C /opt
